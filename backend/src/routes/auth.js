@@ -73,6 +73,27 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
+const authMiddleware = require("../middleware/authMiddleware");
+
+// Get current user profile
+router.get("/me", authMiddleware, async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        bio: true,
+      },
+    });
+
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
 
 
 module.exports = router;
