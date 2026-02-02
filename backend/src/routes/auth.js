@@ -37,5 +37,43 @@ router.post("/register", async (req, res) => {
   }
 });
 
+const jwt = require("jsonwebtoken");
+
+// Login user
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check if user exists
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
+
+    // Create JWT token
+    const token = jwt.sign(
+      { userId: user.id },
+      "supersecretkey",
+      { expiresIn: "7d" }
+    );
+
+    res.json({ message: "Login successful", token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
+
+
 module.exports = router;
 
