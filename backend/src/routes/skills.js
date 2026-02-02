@@ -27,5 +27,19 @@ router.post("/", authMiddleware, async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
+// Get my skills
+router.get("/my", authMiddleware, async (req, res) => {
+  try {
+    const skills = await prisma.skill.findMany({
+      where: { userId: req.userId },
+      orderBy: { id: "desc" },
+    });
+
+    res.json(skills);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
 
 module.exports = router;
