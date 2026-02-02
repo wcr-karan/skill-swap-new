@@ -1,10 +1,12 @@
 const express = require("express");
 const authRoutes = require("./routes/auth");
+const skillRoutes = require("./routes/skills");
 
 const app = express();
 
 app.use(express.json()); // must come AFTER app is created
 app.use("/auth", authRoutes);
+app.use("/skills", skillRoutes);
 
 app.get("/", (req, res) => {
   res.send("Server is running");
