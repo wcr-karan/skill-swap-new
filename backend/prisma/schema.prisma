@@ -19,14 +19,36 @@ model User {
   password String
   bio      String?
 
-  skills   Skill[]   // 👈 add this line
+  skills   Skill[]
+
+  sentRequests     SwapRequest[] @relation("SentRequests")
+  receivedRequests SwapRequest[] @relation("ReceivedRequests")
 }
+
 
 model Skill {
   id      Int    @id @default(autoincrement())
   name    String
-  type    String   // "teach" or "learn"
+  type    String
 
   user    User   @relation(fields: [userId], references: [id])
   userId  Int
+}
+
+
+model SwapRequest {
+  id            Int      @id @default(autoincrement())
+
+  fromUser      User     @relation("SentRequests", fields: [fromUserId], references: [id])
+  fromUserId    Int
+
+  toUser        User     @relation("ReceivedRequests", fields: [toUserId], references: [id])
+  toUserId      Int
+
+  skillOffered  String
+  skillWanted   String
+
+  status        String   @default("pending")
+
+  createdAt     DateTime @default(now())
 }
