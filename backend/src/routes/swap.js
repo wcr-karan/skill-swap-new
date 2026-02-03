@@ -77,5 +77,24 @@ router.patch("/:id", authMiddleware, async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
+// Get swap requests sent by logged-in user
+router.get("/outgoing", authMiddleware, async (req, res) => {
+  try {
+    const requests = await prisma.swapRequest.findMany({
+      where: { fromUserId: req.userId },
+      include: {
+        toUser: {
+          select: { id: true, name: true }
+        }
+      },
+      orderBy: { createdAt: "desc" }
+    });
+
+    res.json(requests);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
 
 module.exports = router;
