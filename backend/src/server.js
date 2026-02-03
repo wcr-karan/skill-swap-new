@@ -2,6 +2,7 @@ const express = require("express");
 const authRoutes = require("./routes/auth");
 const skillRoutes = require("./routes/skills");
 const swapRoutes = require("./routes/swap");
+const matchRoutes = require("./routes/matches");
 
 
 
@@ -11,6 +12,8 @@ app.use(express.json()); // must come AFTER app is created
 app.use("/auth", authRoutes);
 app.use("/skills", skillRoutes);
 app.use("/swap", swapRoutes);
+app.use("/matches", matchRoutes);
+
 
 app.get("/", (req, res) => {
   res.send("Server is running");

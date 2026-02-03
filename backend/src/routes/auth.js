@@ -95,6 +95,31 @@ router.get("/me", authMiddleware, async (req, res) => {
   }
 });
 
+// Update user profile (bio)
+router.patch("/profile", authMiddleware, async (req, res) => {
+  try {
+    const { bio } = req.body;
+
+    const updatedUser = await prisma.user.update({
+      where: { id: req.userId },
+      data: { bio }
+    });
+
+    res.json({
+      message: "Profile updated",
+      user: {
+        id: updatedUser.id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        bio: updatedUser.bio
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
+
 
 module.exports = router;
 
