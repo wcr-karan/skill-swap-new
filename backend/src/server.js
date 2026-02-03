@@ -3,12 +3,14 @@ const authRoutes = require("./routes/auth");
 const skillRoutes = require("./routes/skills");
 const swapRoutes = require("./routes/swap");
 const matchRoutes = require("./routes/matches");
+const cors = require("cors");
 
 
 
 const app = express();
 
 app.use(express.json()); // must come AFTER app is created
+app.use(cors());
 app.use("/auth", authRoutes);
 app.use("/skills", skillRoutes);
 app.use("/swap", swapRoutes);
