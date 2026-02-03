@@ -47,5 +47,35 @@ router.get("/incoming", authMiddleware, async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
+// Accept or reject a swap request
+router.patch("/:id", authMiddleware, async (req, res) => {
+  try {
+    const requestId = parseInt(req.params.id);
+    const { status } = req.body;
+
+    if (!["accepted", "rejected"].includes(status)) {
+      return res.status(400).json({ error: "Invalid status" });
+    }
+
+    // Make sure the logged-in user is the receiver
+    const existing = await prisma.swapRequest.findUnique({
+      where: { id: requestId }
+    });
+
+    if (!existing || existing.toUserId !== req.userId) {
+      return res.status(403).json({ error: "Not authorized" });
+    }
+
+    const updated = await prisma.swapRequest.update({
+      where: { id: requestId },
+      data: { status }
+    });
+
+    res.json(updated);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
 
 module.exports = router;
