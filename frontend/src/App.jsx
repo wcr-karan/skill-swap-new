@@ -8,13 +8,14 @@ function App() {
   const [user, setUser] = useState(null);
   const [skills, setSkills] = useState([]);
 
+  const [newSkill, setNewSkill] = useState("");
+  const [skillType, setSkillType] = useState("teach");
+
   useEffect(() => {
     if (token) {
       // Fetch logged-in user
       fetch("http://localhost:5050/auth/me", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       })
         .then(res => res.json())
         .then(data => setUser(data))
@@ -22,9 +23,7 @@ function App() {
 
       // Fetch user skills
       fetch("http://localhost:5050/skills/my", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       })
         .then(res => res.json())
         .then(data => setSkills(data))
@@ -39,9 +38,7 @@ function App() {
     try {
       const res = await fetch("http://localhost:5050/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
       });
 
@@ -54,7 +51,7 @@ function App() {
       } else {
         setMessage(data.error || "Login failed ❌");
       }
-    } catch (err) {
+    } catch {
       setMessage("Server error ❌");
     }
   };
@@ -66,6 +63,32 @@ function App() {
     setSkills([]);
   };
 
+  const handleAddSkill = async () => {
+    if (!newSkill.trim()) return;
+
+    try {
+      const res = await fetch("http://localhost:5050/skills", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ name: newSkill, type: skillType })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setSkills([...skills, data]);
+        setNewSkill("");
+      } else {
+        alert(data.error || "Failed to add skill");
+      }
+    } catch {
+      alert("Server error");
+    }
+  };
+
   // ---------------- DASHBOARD ----------------
   if (token) {
     return (
@@ -73,6 +96,28 @@ function App() {
         <h1>Welcome, {user?.name || "User"} 👋</h1>
         <p>Email: {user?.email}</p>
         <p>Bio: {user?.bio || "No bio yet"}</p>
+
+        <h2>Add a Skill</h2>
+        <div style={{ marginBottom: "20px" }}>
+          <input
+            type="text"
+            placeholder="Enter skill (e.g. Python)"
+            value={newSkill}
+            onChange={(e) => setNewSkill(e.target.value)}
+            style={{ padding: "6px", marginRight: "10px" }}
+          />
+
+          <select
+            value={skillType}
+            onChange={(e) => setSkillType(e.target.value)}
+            style={{ padding: "6px", marginRight: "10px" }}
+          >
+            <option value="teach">Teach</option>
+            <option value="learn">Learn</option>
+          </select>
+
+          <button onClick={handleAddSkill}>Add Skill</button>
+        </div>
 
         <h2>Your Skills</h2>
 
