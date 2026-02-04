@@ -14,7 +14,6 @@ function App() {
 
   useEffect(() => {
     if (token) {
-      // Fetch logged-in user
       fetch("http://localhost:5050/auth/me", {
         headers: { Authorization: `Bearer ${token}` }
       })
@@ -22,7 +21,6 @@ function App() {
         .then(data => setUser(data))
         .catch(() => setUser(null));
 
-      // Fetch user skills
       fetch("http://localhost:5050/skills/my", {
         headers: { Authorization: `Bearer ${token}` }
       })
@@ -30,7 +28,6 @@ function App() {
         .then(data => setSkills(data))
         .catch(() => setSkills([]));
 
-      // Fetch matches
       fetch("http://localhost:5050/matches", {
         headers: { Authorization: `Bearer ${token}` }
       })
@@ -43,16 +40,13 @@ function App() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setMessage("Logging in...");
-
     try {
       const res = await fetch("http://localhost:5050/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
       });
-
       const data = await res.json();
-
       if (res.ok) {
         localStorage.setItem("token", data.token);
         setToken(data.token);
@@ -75,7 +69,6 @@ function App() {
 
   const handleAddSkill = async () => {
     if (!newSkill.trim()) return;
-
     try {
       const res = await fetch("http://localhost:5050/skills", {
         method: "POST",
@@ -85,14 +78,44 @@ function App() {
         },
         body: JSON.stringify({ name: newSkill, type: skillType })
       });
-
       const data = await res.json();
-
       if (res.ok) {
         setSkills([...skills, data]);
         setNewSkill("");
       } else {
         alert(data.error || "Failed to add skill");
+      }
+    } catch {
+      alert("Server error");
+    }
+  };
+
+  const handleSwapRequest = async (match) => {
+    try {
+      const teachSkill = skills.find(s => s.type === "teach");
+      if (!teachSkill) {
+        alert("Add at least one skill you can teach before sending a swap request.");
+        return;
+      }
+
+      const res = await fetch("http://localhost:5050/swap", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          toUserId: match.user.id,
+          skillOffered: teachSkill.name,
+          skillWanted: match.name
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("Swap request sent 🤝");
+      } else {
+        alert(data.error || "Failed to send request");
       }
     } catch {
       alert("Server error");
@@ -111,12 +134,11 @@ function App() {
         <div style={{ marginBottom: "20px" }}>
           <input
             type="text"
-            placeholder="Enter skill (e.g. Python)"
+            placeholder="Enter skill"
             value={newSkill}
             onChange={(e) => setNewSkill(e.target.value)}
             style={{ padding: "6px", marginRight: "10px" }}
           />
-
           <select
             value={skillType}
             onChange={(e) => setSkillType(e.target.value)}
@@ -125,12 +147,10 @@ function App() {
             <option value="teach">Teach</option>
             <option value="learn">Learn</option>
           </select>
-
           <button onClick={handleAddSkill}>Add Skill</button>
         </div>
 
         <h2>Your Skills</h2>
-
         <h3>Teach 🧠</h3>
         <ul>
           {skills.filter(s => s.type === "teach").map(skill => (
@@ -153,6 +173,10 @@ function App() {
             {matches.map(match => (
               <li key={match.id} style={{ marginBottom: "10px" }}>
                 <strong>{match.user.name}</strong> can teach <b>{match.name}</b>
+                <br />
+                <button onClick={() => handleSwapRequest(match)} style={{ marginTop: "5px" }}>
+                  Request Swap
+                </button>
               </li>
             ))}
           </ul>
@@ -167,19 +191,15 @@ function App() {
   return (
     <div style={{ padding: "40px", fontFamily: "Arial" }}>
       <h1>Skill Swap Platform 🔁</h1>
-
       <form onSubmit={handleLogin} style={{ marginTop: "20px" }}>
-        <div>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{ padding: "8px", width: "250px" }}
-          />
-        </div>
-
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          style={{ padding: "8px", width: "250px" }}
+        />
         <div style={{ marginTop: "10px" }}>
           <input
             type="password"
@@ -190,12 +210,10 @@ function App() {
             style={{ padding: "8px", width: "250px" }}
           />
         </div>
-
         <button type="submit" style={{ marginTop: "15px", padding: "8px 16px" }}>
           Login
         </button>
       </form>
-
       <p style={{ marginTop: "20px" }}>{message}</p>
     </div>
   );
