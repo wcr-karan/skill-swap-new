@@ -6,9 +6,11 @@ function App() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
+  const [skills, setSkills] = useState([]);
 
   useEffect(() => {
     if (token) {
+      // Fetch logged-in user
       fetch("http://localhost:5050/auth/me", {
         headers: {
           Authorization: `Bearer ${token}`
@@ -17,6 +19,16 @@ function App() {
         .then(res => res.json())
         .then(data => setUser(data))
         .catch(() => setUser(null));
+
+      // Fetch user skills
+      fetch("http://localhost:5050/skills/my", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(res => res.json())
+        .then(data => setSkills(data))
+        .catch(() => setSkills([]));
     }
   }, [token]);
 
@@ -51,19 +63,39 @@ function App() {
     localStorage.removeItem("token");
     setToken(null);
     setUser(null);
+    setSkills([]);
   };
 
+  // ---------------- DASHBOARD ----------------
   if (token) {
     return (
       <div style={{ padding: "40px", fontFamily: "Arial" }}>
         <h1>Welcome, {user?.name || "User"} 👋</h1>
         <p>Email: {user?.email}</p>
         <p>Bio: {user?.bio || "No bio yet"}</p>
+
+        <h2>Your Skills</h2>
+
+        <h3>Teach 🧠</h3>
+        <ul>
+          {skills.filter(s => s.type === "teach").map(skill => (
+            <li key={skill.id}>{skill.name}</li>
+          ))}
+        </ul>
+
+        <h3>Learn 📚</h3>
+        <ul>
+          {skills.filter(s => s.type === "learn").map(skill => (
+            <li key={skill.id}>{skill.name}</li>
+          ))}
+        </ul>
+
         <button onClick={handleLogout}>Logout</button>
       </div>
     );
   }
 
+  // ---------------- LOGIN SCREEN ----------------
   return (
     <div style={{ padding: "40px", fontFamily: "Arial" }}>
       <h1>Skill Swap Platform 🔁</h1>
