@@ -7,6 +7,7 @@ function App() {
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
   const [skills, setSkills] = useState([]);
+  const [matches, setMatches] = useState([]);
 
   const [newSkill, setNewSkill] = useState("");
   const [skillType, setSkillType] = useState("teach");
@@ -28,6 +29,14 @@ function App() {
         .then(res => res.json())
         .then(data => setSkills(data))
         .catch(() => setSkills([]));
+
+      // Fetch matches
+      fetch("http://localhost:5050/matches", {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => setMatches(data))
+        .catch(() => setMatches([]));
     }
   }, [token]);
 
@@ -61,6 +70,7 @@ function App() {
     setToken(null);
     setUser(null);
     setSkills([]);
+    setMatches([]);
   };
 
   const handleAddSkill = async () => {
@@ -134,6 +144,19 @@ function App() {
             <li key={skill.id}>{skill.name}</li>
           ))}
         </ul>
+
+        <h2>Your Matches 🤝</h2>
+        {matches.length === 0 ? (
+          <p>No matches yet. Add more learning skills!</p>
+        ) : (
+          <ul>
+            {matches.map(match => (
+              <li key={match.id} style={{ marginBottom: "10px" }}>
+                <strong>{match.user.name}</strong> can teach <b>{match.name}</b>
+              </li>
+            ))}
+          </ul>
+        )}
 
         <button onClick={handleLogout}>Logout</button>
       </div>
