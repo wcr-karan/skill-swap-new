@@ -8,6 +8,8 @@ function App() {
   const [user, setUser] = useState(null);
   const [skills, setSkills] = useState([]);
   const [matches, setMatches] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [sentRequests, setSentRequests] = useState([]);
 
@@ -21,38 +23,28 @@ function App() {
   const loadDashboardData = () => {
     fetch("http://localhost:5050/auth/me", {
       headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(setUser)
-      .catch(() => setUser(null));
+    }).then(res => res.json()).then(setUser).catch(() => setUser(null));
 
     fetch("http://localhost:5050/skills/my", {
       headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(setSkills)
-      .catch(() => setSkills([]));
+    }).then(res => res.json()).then(setSkills).catch(() => setSkills([]));
 
     fetch("http://localhost:5050/matches", {
       headers: { Authorization: `Bearer ${token}` }
-    })
+    }).then(res => res.json()).then(setMatches).catch(() => setMatches([]));
+
+    fetch("http://localhost:5050/matches/users")
       .then(res => res.json())
-      .then(setMatches)
-      .catch(() => setMatches([]));
+      .then(setAllUsers)
+      .catch(() => setAllUsers([]));
 
     fetch("http://localhost:5050/swap/incoming", {
       headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(setIncomingRequests)
-      .catch(() => setIncomingRequests([]));
+    }).then(res => res.json()).then(setIncomingRequests).catch(() => setIncomingRequests([]));
 
     fetch("http://localhost:5050/swap/sent", {
       headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(setSentRequests)
-      .catch(() => setSentRequests([]));
+    }).then(res => res.json()).then(setSentRequests).catch(() => setSentRequests([]));
   };
 
   const handleLogin = async (e) => {
@@ -69,9 +61,7 @@ function App() {
         localStorage.setItem("token", data.token);
         setToken(data.token);
         setMessage("");
-      } else {
-        setMessage(data.error || "Login failed ❌");
-      }
+      } else setMessage(data.error || "Login failed ❌");
     } catch {
       setMessage("Server error ❌");
     }
@@ -85,6 +75,7 @@ function App() {
     setMatches([]);
     setIncomingRequests([]);
     setSentRequests([]);
+    setAllUsers([]);
   };
 
   const handleAddSkill = async () => {
@@ -102,59 +93,49 @@ function App() {
       if (res.ok) {
         setSkills(prev => [...prev, data]);
         setNewSkill("");
-      } else {
-        alert(data.error || "Failed to add skill");
       }
     } catch {
       alert("Server error");
     }
   };
 
-  const handleSwapRequest = async (match) => {
+  const handleSwapRequest = async (targetUserId, skillWanted) => {
     try {
       const teachSkill = skills.find(s => s.type === "teach");
       if (!teachSkill) return alert("Add a teaching skill first.");
 
-      const res = await fetch("http://localhost:5050/swap", {
+      await fetch("http://localhost:5050/swap", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
-          toUserId: match.user.id,
+          toUserId: targetUserId,
           skillOffered: teachSkill.name,
-          skillWanted: match.name
+          skillWanted
         })
       });
 
-      if (res.ok) {
-        alert("Swap request sent 🤝");
-        loadDashboardData();
-      }
+      alert("Swap request sent 🤝");
+      loadDashboardData();
     } catch {
       alert("Server error");
     }
   };
 
   const handleRequestUpdate = async (id, status) => {
-    try {
-      const res = await fetch(`http://localhost:5050/swap/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ status })
-      });
-
-      if (res.ok) loadDashboardData();
-    } catch {
-      alert("Server error");
-    }
+    await fetch(`http://localhost:5050/swap/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ status })
+    });
+    loadDashboardData();
   };
 
-  // ---------------- DASHBOARD ----------------
   if (token) {
     return (
       <div style={{ padding: "40px", fontFamily: "Arial" }}>
@@ -176,12 +157,19 @@ function App() {
         <b>Learn</b>
         <ul>{skills.filter(s => s.type === "learn").map(s => <li key={s.id}>{s.name}</li>)}</ul>
 
-        <h2>Matches</h2>
+        <h2>Browse People 🌍</h2>
         <ul>
-          {matches.map(match => (
-            <li key={match.id}>
-              {match.user.name} teaches {match.name}
-              <button onClick={() => handleSwapRequest(match)}>Request</button>
+          {allUsers.filter(u => u.id !== user?.id).map(u => (
+            <li key={u.id}>
+              <b>{u.name}</b>
+              <ul>
+                {u.skills.map(skill => (
+                  <li key={skill.id}>
+                    Teaches {skill.name}
+                    <button onClick={() => handleSwapRequest(u.id, skill.name)}>Request Swap</button>
+                  </li>
+                ))}
+              </ul>
             </li>
           ))}
         </ul>
@@ -204,9 +192,7 @@ function App() {
         <h2>Sent Requests</h2>
         <ul>
           {sentRequests.map(req => (
-            <li key={req.id}>
-              You requested {req.toUser.name} — {req.status}
-            </li>
+            <li key={req.id}>You requested {req.toUser.name} — {req.status}</li>
           ))}
         </ul>
 
@@ -215,7 +201,6 @@ function App() {
     );
   }
 
-  // ---------------- LOGIN SCREEN ----------------
   return (
     <div style={{ padding: "40px", fontFamily: "Arial" }}>
       <h1>Skill Swap Platform 🔁</h1>
