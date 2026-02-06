@@ -13,11 +13,21 @@ function App() {
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [sentRequests, setSentRequests] = useState([]);
 
+  const [notifications, setNotifications] = useState([]);
+
   const [newSkill, setNewSkill] = useState("");
   const [skillType, setSkillType] = useState("teach");
 
   useEffect(() => {
     if (token) loadDashboardData();
+  }, [token]);
+
+  // 🔁 Auto refresh every 10 seconds for "live" updates
+  useEffect(() => {
+    if (token) {
+      const interval = setInterval(loadDashboardData, 10000);
+      return () => clearInterval(interval);
+    }
   }, [token]);
 
   const loadDashboardData = () => {
@@ -42,9 +52,21 @@ function App() {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => res.json()).then(setIncomingRequests).catch(() => setIncomingRequests([]));
 
+    // 🎉 Check for accepted swap requests (notifications)
     fetch("http://localhost:5050/swap/sent", {
       headers: { Authorization: `Bearer ${token}` }
-    }).then(res => res.json()).then(setSentRequests).catch(() => setSentRequests([]));
+    })
+      .then(res => res.json())
+      .then(data => {
+        setSentRequests(data);
+        const accepted = data.filter(r => r.status === "accepted");
+        if (accepted.length > 0) {
+          setNotifications(
+            accepted.map(r => `🎉 ${r.toUser.name} accepted your swap request!`)
+          );
+        }
+      })
+      .catch(() => setSentRequests([]));
   };
 
   const handleLogin = async (e) => {
@@ -76,6 +98,7 @@ function App() {
     setIncomingRequests([]);
     setSentRequests([]);
     setAllUsers([]);
+    setNotifications([]);
   };
 
   const handleAddSkill = async () => {
@@ -142,6 +165,13 @@ function App() {
         <h1>Welcome, {user?.name} 👋</h1>
         <p>Email: {user?.email}</p>
         <p>Bio: {user?.bio || "No bio yet"}</p>
+
+        {notifications.length > 0 && (
+          <div style={{ background: "#dff0d8", padding: "10px", margin: "15px 0" }}>
+            <h3>Notifications 🔔</h3>
+            <ul>{notifications.map((n, i) => <li key={i}>{n}</li>)}</ul>
+          </div>
+        )}
 
         <h2>Add a Skill</h2>
         <input value={newSkill} onChange={e => setNewSkill(e.target.value)} />
