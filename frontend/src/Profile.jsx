@@ -1,42 +1,61 @@
-import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 function Profile() {
-  const { id } = useParams();
-  const [user, setUser] = useState(null);
+  const [token] = useState(localStorage.getItem("token"));
+  const [bio, setBio] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5050/matches/users")
+    fetch("http://localhost:5050/auth/me", {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(res => res.json())
-      .then(data => {
-        const found = data.find(u => u.id === parseInt(id));
-        setUser(found);
-      });
-  }, [id]);
+      .then(data => setBio(data.bio || ""));
+  }, [token]);
 
-  if (!user) return <p>Loading profile...</p>;
+  const handleSave = async () => {
+    try {
+      const res = await fetch("http://localhost:5050/auth/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ bio })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setMessage("Profile updated successfully ✅");
+      } else {
+        setMessage(data.error || "Update failed ❌");
+      }
+    } catch {
+      setMessage("Server error ❌");
+    }
+  };
 
   return (
     <div style={{ padding: "40px", fontFamily: "Arial" }}>
-      <Link to="/">⬅ Back to Dashboard</Link>
-      <h1>{user.name}'s Profile</h1>
-      <p><strong>Bio:</strong> {user.bio || "No bio added yet."}</p>
+      <h1>Edit Profile 👤</h1>
 
-      <h2>Skills They Teach 🧠</h2>
-      <ul>
-        {user.skills.filter(s => s.type === "teach").map(skill => (
-          <li key={skill.id}>{skill.name}</li>
-        ))}
-      </ul>
+      <textarea
+        value={bio}
+        onChange={(e) => setBio(e.target.value)}
+        placeholder="Write something about yourself..."
+        rows="5"
+        style={{ width: "300px", padding: "10px" }}
+      />
 
-      <h2>Skills They Want to Learn 📚</h2>
-      <ul>
-        {user.skills.filter(s => s.type === "learn").map(skill => (
-          <li key={skill.id}>{skill.name}</li>
-        ))}
-      </ul>
+      <br /><br />
+
+      <button onClick={handleSave}>Save Bio</button>
+
+      <p>{message}</p>
     </div>
   );
 }
 
 export default Profile;
+
