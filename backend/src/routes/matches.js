@@ -43,4 +43,23 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
+// Get all users with their teach skills
+router.get("/users", async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      include: {
+        skills: {
+          where: { type: "teach" }
+        }
+      }
+    });
+
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
+
+
 module.exports = router;
