@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import Profile from "./Profile";
 
 function App() {
@@ -58,11 +58,9 @@ function App() {
       .then(data => {
         setSentRequests(data);
         const accepted = data.filter(r => r.status === "accepted");
-        if (accepted.length > 0) {
-          setNotifications(
-            accepted.map(r => `🎉 ${r.toUser.name} accepted your swap request!`)
-          );
-        }
+        setNotifications(
+          accepted.map(r => `🎉 ${r.toUser.name} accepted your swap request!`)
+        );
       })
       .catch(() => setSentRequests([]));
   };
@@ -157,88 +155,94 @@ function App() {
     loadDashboardData();
   };
 
-  // ---------------- DASHBOARD ROUTES ----------------
+  // ---------------- DASHBOARD ----------------
   if (token) {
     return (
-      <Routes>
-        <Route path="/" element={
-          <div style={{ padding: "40px", fontFamily: "Arial" }}>
-            <h1>Welcome, {user?.name} 👋</h1>
-            <p>Email: {user?.email}</p>
-            <p>Bio: {user?.bio || "No bio yet"}</p>
+      <>
+        <nav style={{ padding: "10px", background: "#eee" }}>
+          <Link to="/">Dashboard</Link> |{" "}
+          <Link to="/profile">Edit Profile</Link> |{" "}
+          <button onClick={handleLogout}>Logout</button>
+        </nav>
 
-            {notifications.length > 0 && (
-              <div style={{ background: "#dff0d8", padding: "10px", margin: "15px 0" }}>
-                <h3>Notifications 🔔</h3>
-                <ul>{notifications.map((n, i) => <li key={i}>{n}</li>)}</ul>
-              </div>
-            )}
+        <Routes>
+          <Route path="/" element={
+            <div style={{ padding: "40px", fontFamily: "Arial" }}>
+              <h1>Welcome, {user?.name} 👋</h1>
+              <p>Email: {user?.email}</p>
+              <p>Bio: {user?.bio || "No bio yet"}</p>
 
-            <h2>Add a Skill</h2>
-            <input value={newSkill} onChange={e => setNewSkill(e.target.value)} />
-            <select value={skillType} onChange={e => setSkillType(e.target.value)}>
-              <option value="teach">Teach</option>
-              <option value="learn">Learn</option>
-            </select>
-            <button onClick={handleAddSkill}>Add</button>
+              {notifications.length > 0 && (
+                <div style={{ background: "#dff0d8", padding: "10px", margin: "15px 0" }}>
+                  <h3>Notifications 🔔</h3>
+                  <ul>{notifications.map((n, i) => <li key={i}>{n}</li>)}</ul>
+                </div>
+              )}
 
-            <h2>Your Skills</h2>
-            <b>Teach</b>
-            <ul>{skills.filter(s => s.type === "teach").map(s => <li key={s.id}>{s.name}</li>)}</ul>
-            <b>Learn</b>
-            <ul>{skills.filter(s => s.type === "learn").map(s => <li key={s.id}>{s.name}</li>)}</ul>
+              <h2>Add a Skill</h2>
+              <input value={newSkill} onChange={e => setNewSkill(e.target.value)} />
+              <select value={skillType} onChange={e => setSkillType(e.target.value)}>
+                <option value="teach">Teach</option>
+                <option value="learn">Learn</option>
+              </select>
+              <button onClick={handleAddSkill}>Add</button>
 
-            <h2>Browse People 🌍</h2>
-            <ul>
-              {allUsers.filter(u => u.id !== user?.id).map(u => (
-                <li key={u.id}>
-                  <Link to={`/profile/${u.id}`}><b>{u.name}</b></Link>
-                  <ul>
-                    {u.skills.map(skill => (
-                      <li key={skill.id}>
-                        Teaches {skill.name}
-                        <button onClick={() => handleSwapRequest(u.id, skill.name)}>
-                          Request Swap
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
-            </ul>
+              <h2>Your Skills</h2>
+              <b>Teach</b>
+              <ul>{skills.filter(s => s.type === "teach").map(s => <li key={s.id}>{s.name}</li>)}</ul>
+              <b>Learn</b>
+              <ul>{skills.filter(s => s.type === "learn").map(s => <li key={s.id}>{s.name}</li>)}</ul>
 
-            <h2>Incoming Requests</h2>
-            <ul>
-              {incomingRequests.map(req => (
-                <li key={req.id}>
-                  {req.fromUser.name} wants {req.skillWanted} — {req.status}
-                  {req.status === "pending" && (
-                    <>
-                      <button onClick={() => handleRequestUpdate(req.id, "accepted")}>Accept</button>
-                      <button onClick={() => handleRequestUpdate(req.id, "rejected")}>Reject</button>
-                    </>
-                  )}
-                </li>
-              ))}
-            </ul>
+              <h2>Browse People 🌍</h2>
+              <ul>
+                {allUsers.filter(u => u.id !== user?.id).map(u => (
+                  <li key={u.id}>
+                    <b>{u.name}</b>
+                    <ul>
+                      {u.skills.map(skill => (
+                        <li key={skill.id}>
+                          Teaches {skill.name}
+                          <button onClick={() => handleSwapRequest(u.id, skill.name)}>
+                            Request Swap
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
 
-            <h2>Sent Requests</h2>
-            <ul>
-              {sentRequests.map(req => (
-                <li key={req.id}>You requested {req.toUser.name} — {req.status}</li>
-              ))}
-            </ul>
+              <h2>Incoming Requests</h2>
+              <ul>
+                {incomingRequests.map(req => (
+                  <li key={req.id}>
+                    {req.fromUser.name} wants {req.skillWanted} — {req.status}
+                    {req.status === "pending" && (
+                      <>
+                        <button onClick={() => handleRequestUpdate(req.id, "accepted")}>Accept</button>
+                        <button onClick={() => handleRequestUpdate(req.id, "rejected")}>Reject</button>
+                      </>
+                    )}
+                  </li>
+                ))}
+              </ul>
 
-            <button onClick={handleLogout}>Logout</button>
-          </div>
-        } />
+              <h2>Sent Requests</h2>
+              <ul>
+                {sentRequests.map(req => (
+                  <li key={req.id}>You requested {req.toUser.name} — {req.status}</li>
+                ))}
+              </ul>
+            </div>
+          } />
 
-        <Route path="/profile/:id" element={<Profile />} />
-      </Routes>
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </>
     );
   }
 
-  // ---------------- LOGIN SCREEN ----------------
+  // ---------------- LOGIN ----------------
   return (
     <div style={{ padding: "40px", fontFamily: "Arial" }}>
       <h1>Skill Swap Platform 🔁</h1>

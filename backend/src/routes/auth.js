@@ -1,15 +1,18 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const prisma = require("../prisma");
+const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// Register user
+const JWT_SECRET = "supersecretkey"; // later we can move this to .env
+
+// ---------------- REGISTER ----------------
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -18,16 +21,10 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ error: "Email already in use" });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
     const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-      },
+      data: { name, email, password: hashedPassword },
     });
 
     res.status(201).json({ message: "User created", userId: user.id });
@@ -37,35 +34,18 @@ router.post("/register", async (req, res) => {
   }
 });
 
-const jwt = require("jsonwebtoken");
-
-// Login user
+// ---------------- LOGIN ----------------
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if user exists
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) return res.status(400).json({ error: "Invalid email or password" });
 
-    if (!user) {
-      return res.status(400).json({ error: "Invalid email or password" });
-    }
-
-    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ error: "Invalid email or password" });
 
-    if (!isMatch) {
-      return res.status(400).json({ error: "Invalid email or password" });
-    }
-
-    // Create JWT token
-    const token = jwt.sign(
-      { userId: user.id },
-      "supersecretkey",
-      { expiresIn: "7d" }
-    );
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "7d" });
 
     res.json({ message: "Login successful", token });
   } catch (error) {
@@ -73,9 +53,8 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
-const authMiddleware = require("../middleware/authMiddleware");
 
-// Get current user profile
+// ---------------- GET MY PROFILE ----------------
 router.get("/me", authMiddleware, async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
@@ -95,14 +74,14 @@ router.get("/me", authMiddleware, async (req, res) => {
   }
 });
 
-// Update user profile (bio)
+// ---------------- UPDATE MY PROFILE ----------------
 router.patch("/profile", authMiddleware, async (req, res) => {
   try {
     const { bio } = req.body;
 
     const updatedUser = await prisma.user.update({
       where: { id: req.userId },
-      data: { bio }
+      data: { bio },
     });
 
     res.json({
@@ -111,8 +90,8 @@ router.patch("/profile", authMiddleware, async (req, res) => {
         id: updatedUser.id,
         name: updatedUser.name,
         email: updatedUser.email,
-        bio: updatedUser.bio
-      }
+        bio: updatedUser.bio,
+      },
     });
   } catch (error) {
     console.error(error);
@@ -120,6 +99,33 @@ router.patch("/profile", authMiddleware, async (req, res) => {
   }
 });
 
+// ---------------- PUBLIC USER PROFILE ----------------
+// Used when clicking another user from the frontend
+router.get("/user/:id", async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: parseInt(req.params.id) },
+      select: {
+        id: true,
+        name: true,
+        bio: true,
+        skills: {
+          where: { type: "teach" },
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
 
 module.exports = router;
-
