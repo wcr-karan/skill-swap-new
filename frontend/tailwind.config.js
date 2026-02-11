@@ -1,0 +1,23 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        brand: '#4F46E5', // Electric Indigo
+        accent: '#FF6B6B', // Vibrant Coral
+        emerald: '#10B981', // Emerald Green (for primary actions)
+        slate: {
+          900: '#1E293B', // Dark Slate
+        }
+      },
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
+    },
+  },
+  plugins: [],
+}
