@@ -9,10 +9,7 @@ export default {
       colors: {
         brand: '#4F46E5', // Electric Indigo
         accent: '#FF6B6B', // Vibrant Coral
-        emerald: '#10B981', // Emerald Green (for primary actions)
-        slate: {
-          900: '#1E293B', // Dark Slate
-        }
+        emerald: '#10B981', // Emerald Green
       },
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
