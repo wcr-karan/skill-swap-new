@@ -67,16 +67,16 @@ export default function AddSkill({ onSkillAdded }) {
                     <input
                         id="skill-name"
                         type="text"
-                        className="block w-full pl-4 pr-12 py-3 border border-gray-200 rounded-xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand/20 focus:border-brand sm:text-sm transition-all"
+                        className="block w-full pl-4 pr-12 py-3 rounded-xl leading-5 glass-input placeholder-gray-400 sm:text-sm"
                         placeholder={type === 'teach' ? "e.g. Python, Guitar, Photoshop" : "e.g. Spanish, Cooking, React"}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
                     <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                         {type === 'teach' ? (
-                            <Sparkles className="h-4 w-4 text-gray-300" />
+                            <Sparkles className="h-4 w-4 text-emerald-500" />
                         ) : (
-                            <BookOpen className="h-4 w-4 text-gray-300" />
+                            <BookOpen className="h-4 w-4 text-brand" />
                         )}
                     </div>
                 </div>
@@ -84,7 +84,7 @@ export default function AddSkill({ onSkillAdded }) {
 
             <Button
                 type="submit"
-                className="w-full rounded-xl bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-200 h-11"
+                className="w-full btn-primary h-11 flex justify-center items-center"
                 disabled={loading || !name.trim()}
             >
                 {loading ? <Loader2 className="animate-spin h-5 w-5" /> : (

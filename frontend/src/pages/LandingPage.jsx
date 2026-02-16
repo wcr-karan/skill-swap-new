@@ -42,21 +42,13 @@ export default function LandingPage() {
     };
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-[#1E1B4B] relative overflow-hidden font-sans text-white">
+        <div className="min-h-screen w-full flex items-center justify-center bg-[#0F172A] relative overflow-hidden font-sans text-white">
 
             {/* Animated Background Mesh */}
-            <div className="absolute inset-0 z-0 overflow-hidden">
-                <motion.div
-                    animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-                    transition={{ duration: 10, repeat: Infinity }}
-                    className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[#4338ca] rounded-full blur-[100px] opacity-40"
-                ></motion.div>
-                <motion.div
-                    animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }}
-                    transition={{ duration: 8, repeat: Infinity, delay: 2 }}
-                    className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#9333ea] rounded-full blur-[100px] opacity-40"
-                ></motion.div>
-                <div className="absolute top-[40%] left-[30%] w-[40%] h-[40%] bg-[#10b981] rounded-full blur-[120px] opacity-20 animate-pulse"></div>
+            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-brand/30 rounded-full blur-[100px] animate-float"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-emerald-500/20 rounded-full blur-[100px] animate-float" style={{ animationDelay: '2s' }}></div>
+                <div className="absolute top-[40%] left-[30%] w-[30vw] h-[30vw] bg-accent/20 rounded-full blur-[120px] animate-pulse"></div>
             </div>
 
             {/* Main Glass Card */}
@@ -66,7 +58,7 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, ease: "easeOut" }}
                 className="relative z-10 w-full max-w-[480px] mx-4"
             >
-                <div className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] rounded-3xl overflow-hidden ring-1 ring-white/10">
+                <div className="glass-card rounded-3xl overflow-hidden ring-1 ring-white/10 shadow-2xl shadow-brand/10">
 
                     {/* Header */}
                     <div className="p-10 pb-2 text-center">
@@ -74,40 +66,40 @@ export default function LandingPage() {
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ delay: 0.2 }}
-                            className="inline-block mb-4"
+                            className="inline-block mb-6"
                         >
-                            <div className="w-16 h-16 bg-gradient-to-tr from-[#10b981] to-[#3b82f6] rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-emerald/20 mb-4 transform rotate-3">
+                            <div className="w-16 h-16 bg-gradient-to-tr from-emerald-400 to-brand rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-brand/30 mb-4 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
                                 <span className="text-3xl font-bold text-white">S</span>
                             </div>
                             <h1 className="text-4xl font-bold tracking-tight text-white mb-2">
-                                Skill<span className="text-[#10b981]">Trade</span>
+                                Skill<span className="text-emerald-400">Trade</span>
                             </h1>
                         </motion.div>
-                        <p className="text-gray-400 text-lg font-medium">
-                            {authMode === 'login' ? 'Welcome back, explorer.' : 'Join the revolution.'}
+                        <p className="text-gray-300 text-lg font-medium">
+                            {authMode === 'login' ? 'Welcome back, explorer.' : 'Join the knowledge revolution.'}
                         </p>
                     </div>
 
                     {/* Form Container */}
                     <div className="p-10 pt-6">
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                        <form onSubmit={handleSubmit} className="space-y-5">
                             <AnimatePresence mode="wait">
                                 {authMode === 'register' && (
                                     <motion.div
                                         key="name-field"
                                         initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                                        animate={{ opacity: 1, height: 'auto', marginBottom: 24 }}
+                                        animate={{ opacity: 1, height: 'auto', marginBottom: 20 }}
                                         exit={{ opacity: 0, height: 0, marginBottom: 0 }}
                                         transition={{ duration: 0.3 }}
                                     >
                                         <div className="relative group">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                                <User className="h-5 w-5 text-gray-400 group-focus-within:text-[#10b981] transition-colors" />
+                                                <User className="h-5 w-5 text-gray-400 group-focus-within:text-emerald-400 transition-colors" />
                                             </div>
                                             <input
                                                 type="text"
                                                 placeholder="Full Name"
-                                                className="w-full bg-[#0f172a]/50 text-white pl-11 pr-4 py-4 rounded-xl border border-white/10 focus:border-[#10b981] focus:ring-1 focus:ring-[#10b981] outline-none transition-all placeholder:text-gray-500 hover:border-white/20"
+                                                className="w-full glass-input text-slate-800 pl-11 pr-4 py-4 rounded-xl placeholder:text-gray-400"
                                                 value={name}
                                                 onChange={(e) => setName(e.target.value)}
                                                 required={authMode === 'register'}
@@ -119,12 +111,12 @@ export default function LandingPage() {
 
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <Mail className="h-5 w-5 text-gray-400 group-focus-within:text-[#10b981] transition-colors" />
+                                    <Mail className="h-5 w-5 text-gray-400 group-focus-within:text-emerald-400 transition-colors" />
                                 </div>
                                 <input
                                     type="email"
                                     placeholder="Email Address"
-                                    className="w-full bg-[#0f172a]/50 text-white pl-11 pr-4 py-4 rounded-xl border border-white/10 focus:border-[#10b981] focus:ring-1 focus:ring-[#10b981] outline-none transition-all placeholder:text-gray-500 hover:border-white/20"
+                                    className="w-full glass-input text-slate-800 pl-11 pr-4 py-4 rounded-xl placeholder:text-gray-400"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
@@ -133,12 +125,12 @@ export default function LandingPage() {
 
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-[#10b981] transition-colors" />
+                                    <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-emerald-400 transition-colors" />
                                 </div>
                                 <input
                                     type="password"
                                     placeholder="Password"
-                                    className="w-full bg-[#0f172a]/50 text-white pl-11 pr-4 py-4 rounded-xl border border-white/10 focus:border-[#10b981] focus:ring-1 focus:ring-[#10b981] outline-none transition-all placeholder:text-gray-500 hover:border-white/20"
+                                    className="w-full glass-input text-slate-800 pl-11 pr-4 py-4 rounded-xl placeholder:text-gray-400"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
@@ -152,9 +144,8 @@ export default function LandingPage() {
                                         initial={{ opacity: 0, y: -10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0 }}
-                                        className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-200 text-sm text-center flex items-center justify-center gap-2"
+                                        className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-600 font-medium text-sm text-center flex items-center justify-center gap-2"
                                     >
-                                        <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
                                         {error}
                                     </motion.div>
                                 )}
@@ -162,24 +153,18 @@ export default function LandingPage() {
 
                             {/* Submit Button */}
                             <motion.button
-                                whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(16, 185, 129, 0.4)" }}
+                                whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 type="submit"
                                 disabled={loading}
-                                className={clsx(
-                                    "w-full py-4 rounded-xl font-bold text-lg shadow-lg flex justify-center items-center transition-all duration-300 relative overflow-hidden group",
-                                    authMode === 'login'
-                                        ? "bg-gradient-to-r from-[#10b981] to-[#059669] text-white"
-                                        : "bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white"
-                                )}
+                                className="w-full btn-primary flex justify-center items-center relative overflow-hidden group"
                             >
-                                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
                                 {loading ? (
-                                    <Loader2 className="animate-spin h-6 w-6 relative z-10" />
+                                    <Loader2 className="animate-spin h-6 w-6" />
                                 ) : (
-                                    <span className="flex items-center relative z-10">
+                                    <span className="flex items-center">
                                         {authMode === 'login' ? 'Sign In' : 'Create Account'}
-                                        <ArrowRight className="ml-2 h-5 w-5 opacity-80 group-hover:translate-x-1 transition-transform" />
+                                        <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                                     </span>
                                 )}
                             </motion.button>
@@ -187,12 +172,12 @@ export default function LandingPage() {
                     </div>
 
                     {/* Footer / Toggle */}
-                    <div className="p-6 bg-[#0f172a]/30 border-t border-white/5 text-center backdrop-blur-sm">
-                        <p className="text-gray-400 text-sm font-medium">
+                    <div className="p-6 bg-gray-50/50 border-t border-gray-100 text-center backdrop-blur-sm">
+                        <p className="text-gray-600 text-sm font-medium">
                             {authMode === 'login' ? "Don't have an account?" : "Already have an account?"}
                             <button
                                 onClick={toggleMode}
-                                className="ml-2 text-white font-bold hover:text-[#10b981] transition-colors underline decoration-[#10b981]/50 hover:decoration-[#10b981] decoration-2 underline-offset-4"
+                                className="ml-2 text-brand font-bold hover:text-emerald-500 transition-colors"
                             >
                                 {authMode === 'login' ? 'Sign up for free' : 'Log in here'}
                             </button>

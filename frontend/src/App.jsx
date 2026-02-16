@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import Explore from './pages/Explore';
 import Matches from './pages/Matches';
 import Requests from './pages/Requests';
+import Profile from './pages/Profile';
 import AuthLayout from './layouts/AuthLayout';
 import DashboardLayout from './layouts/DashboardLayout';
 import PrivateRoute from './components/PrivateRoute';
@@ -31,6 +32,7 @@ function App() {
             <Route path="/explore" element={<Explore />} />
             <Route path="/matches" element={<Matches />} />
             <Route path="/requests" element={<Requests />} />
+            <Route path="/profile/:userId" element={<Profile />} />
           </Route>
         </Route>
 

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Button } from './Button';
 import { Menu, X } from 'lucide-react';
 import { clsx } from 'clsx';
+import Notifications from './Notifications';
 
 export default function Navbar() {
     const { user } = useAuth();
@@ -46,6 +47,7 @@ export default function Navbar() {
                                 <Link to="/dashboard">
                                     <Button variant="ghost" className="text-slate-600 hover:text-emerald">Dashboard</Button>
                                 </Link>
+                                <Notifications />
                                 <div className="h-9 w-9 rounded-full bg-emerald/10 flex items-center justify-center text-emerald font-bold border-2 border-transparent">
                                     {user.name?.charAt(0).toUpperCase()}
                                 </div>
