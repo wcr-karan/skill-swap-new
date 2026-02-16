@@ -128,4 +128,22 @@ router.get("/user/:id", async (req, res) => {
   }
 });
 
+// Get user details by ID (Public)
+router.get("/user/:id", async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, name: true, bio: true, skills: true }
+    });
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 module.exports = router;

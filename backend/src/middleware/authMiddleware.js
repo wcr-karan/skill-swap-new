@@ -10,7 +10,7 @@ const authMiddleware = (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, "supersecretkey");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "supersecretkey");
     req.userId = decoded.userId;
     next();
   } catch (error) {

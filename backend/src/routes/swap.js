@@ -22,7 +22,16 @@ router.post("/", authMiddleware, async (req, res) => {
       },
     });
 
-    res.status(201).json(request);
+    // Create Notification for the receiver
+    await prisma.notification.create({
+      data: {
+        userId: parseInt(toUserId), // Ensure toUserId is an integer
+        type: "request_received",
+        message: `You received a swap request from User ${req.userId} for ${skillWanted}`,
+      }
+    });
+
+    res.status(201).json({ message: "Swap request sent", request });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Something went wrong" });
@@ -68,7 +77,18 @@ router.patch("/:id", authMiddleware, async (req, res) => {
 
     const updated = await prisma.swapRequest.update({
       where: { id: requestId },
-      data: { status }
+      data: { status },
+    });
+
+    // Notify the requester
+    await prisma.notification.create({
+      data: {
+        userId: existing.fromUserId,
+        type: status === "accepted" ? "request_accepted" : "request_rejected",
+        message: status === "accepted"
+          ? `Your swap request to User ${existing.toUserId} was accepted!`
+          : `Your swap request to User ${existing.toUserId} was rejected.`,
+      }
     });
 
     res.json(updated);

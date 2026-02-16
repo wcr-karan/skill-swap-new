@@ -15,6 +15,7 @@ app.use("/auth", authRoutes);
 app.use("/skills", skillRoutes);
 app.use("/swap", swapRoutes);
 app.use("/matches", matchRoutes);
+app.use("/notifications", require("./routes/notifications"));
 
 
 app.get("/", (req, res) => {
