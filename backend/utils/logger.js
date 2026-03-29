@@ -4,3 +4,4 @@ const logError = (msg) => console.error(`[ERROR]: ${msg}`);
 module.exports.logError = logError;
 const logWarn = (msg) => console.warn(`[WARN]: ${msg}`);
 module.exports.logWarn = logWarn;
+// TODO: implement timestamp prefix
