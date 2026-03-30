@@ -31,7 +31,7 @@ export default function Profile() {
                 // Let's try to hit /skills?userId={userId} if that existed, or just /auth/user/:id if I added it.
                 // I will add a method to get public user info in auth routes just to be safe.
 
-                const res = await axios.get(`http://localhost:5050/auth/user/${userId}`, {
+                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/auth/user/${userId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setProfile(res.data);
@@ -56,7 +56,7 @@ export default function Profile() {
             // Temporary: Offer "General Knowledge" or my first skill.
             const skillOffered = "General Mentorship"; // simplifying for prototype
 
-            await axios.post('http://localhost:5050/swap', {
+            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/swap`, {
                 toUserId: userId,
                 skillWanted: skillWanted.name,
                 skillOffered

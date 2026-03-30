@@ -6,7 +6,7 @@ function Profile() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5050/auth/me", {
+    fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -15,7 +15,7 @@ function Profile() {
 
   const handleSave = async () => {
     try {
-      const res = await fetch("http://localhost:5050/auth/profile", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/auth/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

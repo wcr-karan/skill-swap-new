@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Button } from './Button';
 import { Menu, X } from 'lucide-react';
 import { clsx } from 'clsx';
+import { motion } from 'framer-motion';
 import Notifications from './Notifications';
 
 export default function Navbar() {
@@ -29,15 +30,34 @@ export default function Navbar() {
 
                     {/* Center Links (Desktop) */}
                     <div className="hidden md:flex items-center space-x-8">
-                        {['About', 'Explore', 'Communities', 'Connect'].map((item) => (
-                            <a
-                                key={item}
-                                href={`#${item.toLowerCase()}`}
-                                className="text-slate-600 hover:text-emerald font-medium text-sm transition-colors"
-                            >
-                                {item}
-                            </a>
-                        ))}
+                        {[
+                            { name: 'About', href: '/about' },
+                            { name: 'Explore', href: '/explore' },
+                            { name: 'Communities', href: '/communities' },
+                            { name: 'Connect', href: '/connect' },
+                        ].map((item) => {
+                            const isActive = location.pathname === item.href;
+                            return (
+                                <Link
+                                    key={item.name}
+                                    to={item.href}
+                                    className={clsx(
+                                        "font-medium text-sm transition-all duration-200 relative py-1",
+                                        isActive
+                                            ? "text-emerald"
+                                            : "text-slate-600 hover:text-emerald"
+                                    )}
+                                >
+                                    {item.name}
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="nav-underline"
+                                            className="absolute -bottom-1 left-0 right-0 h-0.5 bg-emerald rounded-full"
+                                        />
+                                    )}
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     {/* Right Actions */}
@@ -84,15 +104,25 @@ export default function Navbar() {
             {isMenuOpen && (
                 <div className="md:hidden bg-white border-t border-gray-100 absolute w-full left-0 shadow-xl">
                     <div className="px-4 pt-2 pb-6 space-y-2">
-                        {['About', 'Explore', 'Communities', 'Connect'].map((item) => (
-                            <a
-                                key={item}
-                                href={`#${item.toLowerCase()}`}
-                                className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-emerald hover:bg-emerald/5"
+                        {[
+                            { name: 'About', href: '/about' },
+                            { name: 'Explore', href: '/explore' },
+                            { name: 'Communities', href: '/communities' },
+                            { name: 'Connect', href: '/connect' },
+                        ].map((item) => (
+                            <Link
+                                key={item.name}
+                                to={item.href}
+                                className={clsx(
+                                    "block px-3 py-2 rounded-xl text-base font-medium transition-colors",
+                                    location.pathname === item.href
+                                        ? "text-emerald bg-emerald/5"
+                                        : "text-slate-700 hover:text-emerald hover:bg-emerald/5"
+                                )}
                                 onClick={() => setIsMenuOpen(false)}
                             >
-                                {item}
-                            </a>
+                                {item.name}
+                            </Link>
                         ))}
                         {!user && (
                             <div className="pt-4 flex flex-col space-y-3">

@@ -4,6 +4,9 @@ import Register from './pages/Register';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import Explore from './pages/Explore';
+import Communities from './pages/Communities';
+import Connect from './pages/Connect';
+import About from './pages/About';
 import Matches from './pages/Matches';
 import Requests from './pages/Requests';
 import Profile from './pages/Profile';
@@ -30,6 +33,9 @@ function App() {
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/explore" element={<Explore />} />
+            <Route path="/communities" element={<Communities />} />
+            <Route path="/connect" element={<Connect />} />
+            <Route path="/about" element={<About />} />
             <Route path="/matches" element={<Matches />} />
             <Route path="/requests" element={<Requests />} />
             <Route path="/profile/:userId" element={<Profile />} />

@@ -12,7 +12,7 @@ export default function Notifications() {
 
     const fetchNotifications = async () => {
         try {
-            const res = await axios.get('http://localhost:5050/notifications', {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/notifications`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setNotifications(res.data);
@@ -32,7 +32,7 @@ export default function Notifications() {
 
     const markAsRead = async (id) => {
         try {
-            await axios.put(`http://localhost:5050/notifications/${id}/read`, {}, {
+            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/notifications/${id}/read`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));

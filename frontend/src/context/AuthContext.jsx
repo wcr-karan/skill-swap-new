@@ -8,6 +8,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [token, setToken] = useState(localStorage.getItem('token'));
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -40,6 +41,7 @@ export const AuthProvider = ({ children }) => {
         // Fetch user details immediately after login
         const userRes = await authAPI.getMe();
         setUser(userRes.data);
+        setToken(token);
         return userRes.data;
     };
 
@@ -54,6 +56,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('token');
         delete api.defaults.headers.common['Authorization'];
         setUser(null);
+        setToken(null);
     };
 
     const updateUser = (userData) => {
@@ -62,6 +65,7 @@ export const AuthProvider = ({ children }) => {
 
     const value = {
         user,
+        token,
         loading,
         login,
         register,

@@ -99,34 +99,6 @@ router.patch("/profile", authMiddleware, async (req, res) => {
   }
 });
 
-// ---------------- PUBLIC USER PROFILE ----------------
-// Used when clicking another user from the frontend
-router.get("/user/:id", async (req, res) => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: parseInt(req.params.id) },
-      select: {
-        id: true,
-        name: true,
-        bio: true,
-        skills: {
-          where: { type: "teach" },
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-    });
-
-    if (!user) return res.status(404).json({ error: "User not found" });
-
-    res.json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
-  }
-});
 
 // Get user details by ID (Public)
 router.get("/user/:id", async (req, res) => {
