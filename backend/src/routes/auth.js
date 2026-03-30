@@ -30,7 +30,7 @@ router.post("/register", async (req, res) => {
     res.status(201).json({ message: "User created", userId: user.id });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ error: "Something went wrong", details: error.message, stack: error.stack });
   }
 });
 
