@@ -6,7 +6,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-const JWT_SECRET = "supersecretkey"; // later we can move this to .env
+const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey";
 
 // ---------------- REGISTER ----------------
 router.post("/register", async (req, res) => {
