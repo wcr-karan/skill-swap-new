@@ -6,3 +6,4 @@ export const snippet458 = () => 458;
 export const snippet98 = () => 98;
 export const snippet852 = () => 852;
 export const snippet307 = () => 307;
+export const snippet1 = () => 1;
