@@ -66,3 +66,5 @@ model Notification {
   
   createdAt DateTime @default(now())
 }
+
+// schema update: 1
