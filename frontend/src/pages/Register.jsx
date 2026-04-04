@@ -107,3 +107,5 @@ export default function Register() {
         </form>
     );
 }
+
+// minor update code refactor: 2
