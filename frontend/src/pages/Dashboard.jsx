@@ -106,3 +106,5 @@ export default function Dashboard() {
         </motion.div>
     );
 }
+
+// minor update code refactor: 3
