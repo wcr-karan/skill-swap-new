@@ -190,3 +190,5 @@ export default function LandingPage() {
         </div>
     );
 }
+
+// minor update code refactor: 4
