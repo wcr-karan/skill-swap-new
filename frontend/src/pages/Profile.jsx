@@ -152,3 +152,5 @@ export default function Profile() {
         </motion.div>
     );
 }
+
+// minor update code refactor: 4
