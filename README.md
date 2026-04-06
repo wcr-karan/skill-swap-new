@@ -57,3 +57,4 @@ A web application that enables users to connect and swap skills with each other.
 ## Project Structure
 - `frontend/`: React application with Tailwind CSS.
 - `backend/`: Node.js Express server with Prisma ORM.
+ 
