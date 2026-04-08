@@ -145,3 +145,5 @@ export default function Explore() {
         </div>
     );
 }
+
+// minor update code refactor: 1
