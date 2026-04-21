@@ -3,6 +3,7 @@ import { skillsAPI } from '../api/endpoints';
 import UserCard from '../components/UserCard';
 import { Loader2, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 export default function Matches() {
     const [matches, setMatches] = useState([]);
@@ -15,11 +16,8 @@ export default function Matches() {
     const fetchMatches = async () => {
         try {
             const res = await skillsAPI.getMatches();
-            // The backend returns matches based on skills.
-            // We process distinct users from matches
             const users = new Map();
             res.data.forEach(match => {
-                // match.user is the matched user
                 users.set(match.user.id, match.user);
             });
             setMatches(Array.from(users.values()));
@@ -32,34 +30,49 @@ export default function Matches() {
     };
 
     return (
-        <div className="space-y-8">
-            <div className="text-center max-w-2xl mx-auto space-y-4">
-                <h1 className="text-3xl font-bold text-slate-900 flex items-center justify-center gap-2">
-                    <Sparkles className="text-brand h-8 w-8" />
-                    Smart Matches
+        <div className="space-y-8 py-6 max-w-6xl mx-auto">
+            <div className="text-center space-y-3">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-full"
+                >
+                    <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
+                    <span className="text-[10px] font-bold tracking-widest uppercase text-indigo-400">AI Powered</span>
+                </motion.div>
+                <h1 className="text-4xl font-black text-white tracking-tight">
+                    Smart <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Matches</span>
                 </h1>
-                <p className="text-gray-500 text-lg">
-                    These people teach exactly what you want to learn, and want to learn what you verify teach!
+                <p className="text-slate-400 text-base font-medium max-w-xl mx-auto">
+                    These people teach exactly what you want to learn, and want to learn what you teach!
                 </p>
             </div>
 
             {loading ? (
-                <div className="flex justify-center py-12">
-                    <Loader2 className="animate-spin h-10 w-10 text-brand" />
+                <div className="flex flex-col items-center justify-center py-20 gap-4">
+                    <Loader2 className="animate-spin h-10 w-10 text-indigo-400" />
+                    <p className="text-slate-500 font-medium animate-pulse">Finding your best matches...</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {matches.length > 0 ? (
-                        matches.map(user => (
-                            <UserCard key={user.id} user={user} />
+                        matches.map((user, idx) => (
+                            <motion.div
+                                key={user.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: idx * 0.07 }}
+                            >
+                                <UserCard user={user} />
+                            </motion.div>
                         ))
                     ) : (
-                        <div className="col-span-full py-16 text-center bg-white rounded-3xl border border-dashed border-gray-200">
-                            <div className="mx-auto h-24 w-24 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                                <Sparkles className="h-10 w-10 text-gray-300" />
+                        <div className="col-span-full py-24 text-center bg-slate-900/80 rounded-2xl border border-white/[0.06] backdrop-blur-sm">
+                            <div className="mx-auto h-16 w-16 bg-white/[0.04] rounded-2xl flex items-center justify-center mb-4 border border-white/[0.06]">
+                                <Sparkles className="h-8 w-8 text-slate-600" />
                             </div>
-                            <h3 className="text-lg font-medium text-gray-900">No matches yet</h3>
-                            <p className="text-gray-500 max-w-md mx-auto mt-2">
+                            <h3 className="text-lg font-bold text-white mb-2">No matches yet</h3>
+                            <p className="text-slate-500 max-w-sm mx-auto text-sm">
                                 Try adding more skills you can teach or want to learn to increase your chances of finding a swap partner.
                             </p>
                         </div>
