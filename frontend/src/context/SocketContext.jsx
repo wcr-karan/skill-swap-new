@@ -14,7 +14,7 @@ export const SocketProvider = ({ children }) => {
         if (!user) return;
 
         // Connect to backend socket server
-        const socket = io('http://localhost:5050', {
+        const socket = io('https://skillswap-api-xq3t.onrender.com', {
             transports: ['websocket'],
             reconnectionAttempts: 5,
         });
