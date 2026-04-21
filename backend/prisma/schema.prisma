@@ -24,6 +24,7 @@ model User {
   sentRequests     SwapRequest[] @relation("SentRequests")
   receivedRequests SwapRequest[] @relation("ReceivedRequests")
   notifications    Notification[]
+  sentMessages     Message[]     @relation("SentMessages")
 }
 
 
@@ -50,8 +51,10 @@ model SwapRequest {
   skillWanted   String
 
   status        String   @default("pending")
+  message       String?
 
   createdAt     DateTime @default(now())
+  messages      Message[]
 }
 
 model Notification {
@@ -65,6 +68,18 @@ model Notification {
   read      Boolean  @default(false)
   
   createdAt DateTime @default(now())
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  content    String
+  createdAt  DateTime @default(now())
+
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  senderId   Int
+
+  swapId     Int
+  swap       SwapRequest @relation(fields: [swapId], references: [id])
 }
 
 // schema update: 1
