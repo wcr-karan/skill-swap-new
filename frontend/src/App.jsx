@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import Explore from './pages/Explore';
 import Communities from './pages/Communities';
@@ -31,8 +30,8 @@ function App() {
           <Route path="/register" element={<Register />} />
         </Route>
 
-        {/* Public Landing Page */}
-        <Route path="/" element={<LandingPage />} />
+        {/* Redirect Root to Login */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
 
         <Route element={<DashboardLayout />}>
           <Route element={<PrivateRoute />}>

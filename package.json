@@ -1,0 +1,24 @@
+{
+  "name": "skill-swap-platform",
+  "version": "1.0.0",
+  "description": "A web application that enables users to connect and swap skills with each other. Users can register, list their skills, find others with complementary skills, and initiate swaps.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wcr-karan/skill-swap-new.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/wcr-karan/skill-swap-new/issues"
+  },
+  "homepage": "https://github.com/wcr-karan/skill-swap-new#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
