@@ -38,12 +38,19 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-
+    console.log("Login attempt for:", email);
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return res.status(400).json({ error: "Invalid email or password" });
+    if (!user) {
+      console.log("User not found in DB:", email);
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ error: "Invalid email or password" });
+    console.log("Password match result:", isMatch);
+    if (!isMatch) {
+      console.log("Password mismatch for user:", email);
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
 
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "7d" });
 

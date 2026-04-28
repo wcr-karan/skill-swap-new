@@ -19,7 +19,7 @@ export default function Login() {
             await login(email, password);
             navigate('/dashboard');
         } catch (err) {
-            setError(err.response?.data?.error || 'Failed to login');
+            setError(err.response?.data?.error || 'Invalid email or password.');
         } finally {
             setLoading(false);
         }
@@ -31,45 +31,52 @@ export default function Login() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email */}
-            <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300 block">Email</label>
+            <div className="space-y-1.5">
+                <label className="text-[13px] font-medium text-slate-400">Email address</label>
                 <div className="relative group">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 h-4.5 w-4.5 group-focus-within:text-indigo-400 transition-colors duration-200" />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600 h-4 w-4 group-focus-within:text-indigo-400 transition-colors duration-200" />
                     <input
                         id="login-email"
                         type="email"
                         placeholder="you@example.com"
-                        className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/[0.05] border border-white/[0.08] text-white placeholder:text-slate-600 focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 focus:bg-white/[0.07] outline-none transition-all duration-300 text-sm"
+                        className="input-base input-icon"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
+                        autoComplete="email"
                     />
                 </div>
             </div>
 
             {/* Password */}
-            <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300 block">Password</label>
+            <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                    <label className="text-[13px] font-medium text-slate-400">Password</label>
+                    <button type="button" className="text-[12px] text-indigo-400 hover:text-indigo-300 transition-colors font-medium">
+                        Forgot password?
+                    </button>
+                </div>
                 <div className="relative group">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 h-4.5 w-4.5 group-focus-within:text-indigo-400 transition-colors duration-200" />
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600 h-4 w-4 group-focus-within:text-indigo-400 transition-colors duration-200" />
                     <input
                         id="login-password"
                         type="password"
                         placeholder="••••••••"
-                        className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/[0.05] border border-white/[0.08] text-white placeholder:text-slate-600 focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 focus:bg-white/[0.07] outline-none transition-all duration-300 text-sm"
+                        className="input-base input-icon"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        autoComplete="current-password"
                     />
                 </div>
             </div>
 
             {/* Error */}
             {error && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
-                    <p className="text-red-400 text-sm text-center">{error}</p>
+                <div className="bg-red-500/8 border border-red-500/20 rounded-xl px-4 py-3">
+                    <p className="text-red-400 text-[13px] text-center font-medium">{error}</p>
                 </div>
             )}
 
@@ -78,28 +85,16 @@ export default function Login() {
                 id="login-submit"
                 type="submit"
                 disabled={loading}
-                className="w-full relative group bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3.5 rounded-xl font-semibold shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40 hover:from-indigo-500 hover:to-purple-500 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-lg flex justify-center items-center gap-2 text-sm"
+                className="w-full btn-primary py-3 mt-1"
             >
                 {loading ? (
-                    <Loader2 className="animate-spin h-5 w-5" />
+                    <Loader2 className="animate-spin h-4 w-4" />
                 ) : (
                     <>
                         Sign In
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                        <ArrowRight className="w-4 h-4" />
                     </>
                 )}
-                {/* Button glow */}
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-300" />
-            </button>
-
-            {/* Use Test Account */}
-            <button
-                type="button"
-                onClick={fillTestAccount}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-white/[0.08] text-slate-400 hover:text-indigo-300 hover:border-indigo-500/30 hover:bg-indigo-500/[0.05] transition-all duration-300 text-sm font-medium"
-            >
-                <Zap className="w-4 h-4" />
-                Use Test Account
             </button>
 
             {/* Divider */}
@@ -107,16 +102,31 @@ export default function Login() {
                 <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-white/[0.06]" />
                 </div>
+                <div className="relative flex justify-center">
+                    <span className="px-3 bg-[#161B27] text-[11px] text-slate-600 uppercase tracking-widest font-semibold">
+                        or
+                    </span>
+                </div>
             </div>
 
+            {/* Quick fill */}
+            <button
+                type="button"
+                onClick={fillTestAccount}
+                className="w-full btn-secondary py-3 text-[13px]"
+            >
+                <Zap className="w-3.5 h-3.5 text-indigo-400" />
+                Use Demo Account
+            </button>
+
             {/* Sign up link */}
-            <p className="text-center text-slate-500 text-sm pt-2">
+            <p className="text-center text-[13px] text-slate-500 pt-1">
                 Don't have an account?{' '}
                 <Link
                     to="/register"
                     className="text-indigo-400 font-semibold hover:text-indigo-300 transition-colors"
                 >
-                    Sign up
+                    Create one free →
                 </Link>
             </p>
         </form>

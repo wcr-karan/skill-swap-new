@@ -60,57 +60,60 @@ export default function Register() {
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             {/* Full Name */}
-            <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300 block">Full Name</label>
+            <div className="space-y-1.5">
+                <label className="text-[13px] font-medium text-slate-400 block">Full Name</label>
                 <div className="relative group">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 h-4.5 w-4.5 group-focus-within:text-indigo-400 transition-colors duration-200" />
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600 h-4 w-4 group-focus-within:text-indigo-400 transition-colors" />
                     <input
                         id="register-name"
                         type="text"
                         placeholder="John Doe"
-                        className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/[0.05] border border-white/[0.08] text-white placeholder:text-slate-600 focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 focus:bg-white/[0.07] outline-none transition-all duration-300 text-sm"
+                        className="input-base input-icon"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
+                        autoComplete="name"
                     />
                 </div>
             </div>
 
             {/* Email */}
-            <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300 block">Email</label>
+            <div className="space-y-1.5">
+                <label className="text-[13px] font-medium text-slate-400 block">Email address</label>
                 <div className="relative group">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 h-4.5 w-4.5 group-focus-within:text-indigo-400 transition-colors duration-200" />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600 h-4 w-4 group-focus-within:text-indigo-400 transition-colors" />
                     <input
                         id="register-email"
                         type="email"
                         placeholder="you@example.com"
-                        className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/[0.05] border border-white/[0.08] text-white placeholder:text-slate-600 focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 focus:bg-white/[0.07] outline-none transition-all duration-300 text-sm"
+                        className="input-base input-icon"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
+                        autoComplete="email"
                     />
                 </div>
             </div>
 
             {/* Password */}
-            <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300 block">Password</label>
+            <div className="space-y-1.5">
+                <label className="text-[13px] font-medium text-slate-400 block">Password</label>
                 <div className="relative group">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 h-4.5 w-4.5 group-focus-within:text-indigo-400 transition-colors duration-200" />
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600 h-4 w-4 group-focus-within:text-indigo-400 transition-colors" />
                     <input
                         id="register-password"
                         type="password"
-                        placeholder="••••••••"
-                        className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/[0.05] border border-white/[0.08] text-white placeholder:text-slate-600 focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 focus:bg-white/[0.07] outline-none transition-all duration-300 text-sm"
+                        placeholder="Min. 6 characters"
+                        className="input-base input-icon"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        autoComplete="new-password"
                     />
                 </div>
                 {/* Password strength bar */}
                 {password && (
-                    <div className="flex items-center gap-3 pt-1">
+                    <div className="flex items-center gap-3 pt-0.5">
                         <div className="flex gap-1 flex-1">
                             {[1, 2, 3, 4].map((i) => (
                                 <div
@@ -121,7 +124,7 @@ export default function Register() {
                                 />
                             ))}
                         </div>
-                        <span className={`text-xs font-medium ${
+                        <span className={`text-[11px] font-semibold ${
                             strength.level <= 1 ? 'text-red-400' :
                             strength.level <= 2 ? 'text-amber-400' :
                             strength.level <= 3 ? 'text-indigo-400' :
@@ -134,28 +137,28 @@ export default function Register() {
             </div>
 
             {/* Confirm Password */}
-            <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300 block">Confirm Password</label>
+            <div className="space-y-1.5">
+                <label className="text-[13px] font-medium text-slate-400 block">Confirm Password</label>
                 <div className="relative group">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 h-4.5 w-4.5 group-focus-within:text-indigo-400 transition-colors duration-200" />
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600 h-4 w-4 group-focus-within:text-indigo-400 transition-colors" />
                     <input
                         id="register-confirm-password"
                         type="password"
                         placeholder="••••••••"
-                        className={`w-full pl-11 pr-11 py-3.5 rounded-xl bg-white/[0.05] border text-white placeholder:text-slate-600 focus:ring-2 focus:bg-white/[0.07] outline-none transition-all duration-300 text-sm ${
+                        className={`input-base input-icon pr-10 ${
                             confirmPassword
                                 ? passwordsMatch
-                                    ? 'border-emerald-500/40 focus:border-emerald-500/50 focus:ring-emerald-500/20'
-                                    : 'border-red-500/40 focus:border-red-500/50 focus:ring-red-500/20'
-                                : 'border-white/[0.08] focus:border-indigo-500/50 focus:ring-indigo-500/20'
+                                    ? 'border-emerald-500/40 focus:border-emerald-500/50 focus:ring-emerald-500/15'
+                                    : 'border-red-500/40 focus:border-red-500/50 focus:ring-red-500/15'
+                                : ''
                         }`}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
+                        autoComplete="new-password"
                     />
-                    {/* Match indicator */}
                     {confirmPassword && passwordsMatch && (
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                        <div className="absolute right-3.5 top-1/2 -translate-y-1/2">
                             <Check className="w-4 h-4 text-emerald-400" />
                         </div>
                     )}
@@ -164,8 +167,8 @@ export default function Register() {
 
             {/* Error */}
             {error && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
-                    <p className="text-red-400 text-sm text-center">{error}</p>
+                <div className="bg-red-500/8 border border-red-500/20 rounded-xl px-4 py-3">
+                    <p className="text-red-400 text-[13px] text-center font-medium">{error}</p>
                 </div>
             )}
 
@@ -174,10 +177,10 @@ export default function Register() {
                 id="register-submit"
                 type="submit"
                 disabled={loading}
-                className="w-full relative group bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3.5 rounded-xl font-semibold shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40 hover:from-indigo-500 hover:to-purple-500 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-lg flex justify-center items-center gap-2 text-sm mt-2"
+                className="w-full btn-primary py-3 mt-1"
             >
                 {loading ? (
-                    <Loader2 className="animate-spin h-5 w-5" />
+                    <Loader2 className="animate-spin h-4 w-4" />
                 ) : (
                     <>
                         Create Account

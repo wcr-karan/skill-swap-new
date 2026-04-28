@@ -41,53 +41,55 @@ export default function Explore() {
     }, [searchTerm, activeCategory, users]);
 
     return (
-        <div className="space-y-8 py-6 max-w-6xl mx-auto">
+        <div className="space-y-8 max-w-7xl">
             {/* Header */}
-            <div className="text-center space-y-3">
+            <div className="space-y-3">
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-[10px] font-bold tracking-widest uppercase text-indigo-400 mb-2"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-full"
                 >
-                    Discover Talent
+                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+                    <span className="text-[11px] text-indigo-300 font-semibold uppercase tracking-wider">Discover Talent</span>
                 </motion.div>
-                <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">
-                    Meet Your Next <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Mentor</span>
+
+                <h1 className="text-3xl font-bold text-white tracking-tight">
+                    Find Your Next <span className="text-gradient-brand">Skill Partner</span>
                 </h1>
-                <p className="text-slate-400 text-lg font-medium max-w-2xl mx-auto">
-                    Search through our global community of experts ready to share their knowledge.
+                <p className="text-[15px] text-slate-400 max-w-xl">
+                    Browse our global community of experts ready to share and exchange their knowledge.
                 </p>
             </div>
 
             {/* Controls */}
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <div className="flex flex-col md:flex-row gap-3">
                     <div className="relative flex-1 group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-600 group-focus-within:text-indigo-400 transition-colors" />
                         <input
                             type="text"
-                            placeholder="Search by name, expertise, or specific skill..."
+                            placeholder="Search by name, skill, or expertise..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-11 pr-4 py-3.5 bg-slate-900/80 border border-white/[0.08] rounded-xl text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/40 transition-all text-sm backdrop-blur-sm"
+                            className="input-base input-icon"
                         />
                     </div>
-                    <button className="flex items-center gap-2 px-5 py-3.5 bg-slate-900/80 border border-white/[0.08] rounded-xl text-sm font-semibold text-slate-400 hover:border-white/[0.15] hover:text-slate-200 transition-all backdrop-blur-sm">
-                        <Filter className="h-4.5 w-4.5" />
-                        Advanced
+                    <button className="btn-secondary gap-2">
+                        <Filter className="h-4 w-4" />
+                        Filters
                     </button>
                 </div>
 
-                <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                <div className="flex gap-2 overflow-x-auto pb-1">
                     {categories.map(cat => (
                         <button
                             key={cat}
                             onClick={() => setActiveCategory(cat)}
                             className={clsx(
-                                "px-5 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap uppercase tracking-wider border",
+                                "px-4 py-1.5 rounded-lg text-[12px] font-semibold transition-all whitespace-nowrap border",
                                 activeCategory === cat
-                                    ? "bg-indigo-500/20 text-indigo-300 border-indigo-500/30"
-                                    : "bg-slate-900/80 text-slate-500 hover:bg-white/[0.05] hover:text-slate-300 border-white/[0.06]"
+                                    ? "bg-indigo-500/15 text-indigo-300 border-indigo-500/25"
+                                    : "bg-white/[0.03] text-slate-500 hover:text-slate-300 hover:bg-white/[0.05] border-white/[0.06]"
                             )}
                         >
                             {cat}
@@ -96,23 +98,30 @@ export default function Explore() {
                 </div>
             </div>
 
+            {/* Results count */}
+            {!loading && (
+                <p className="text-[12px] text-slate-500 font-medium">
+                    {filteredUsers.length} member{filteredUsers.length !== 1 ? 's' : ''} found
+                </p>
+            )}
+
             {loading ? (
-                <div className="flex flex-col items-center justify-center py-20 space-y-4">
-                    <Loader2 className="animate-spin h-10 w-10 text-indigo-400" />
-                    <p className="text-slate-500 font-medium animate-pulse">Scanning the community...</p>
+                <div className="flex flex-col items-center justify-center py-24 space-y-4">
+                    <Loader2 className="animate-spin h-8 w-8 text-indigo-400" />
+                    <p className="text-slate-500 text-sm font-medium">Loading community members...</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     <AnimatePresence mode="popLayout">
                         {filteredUsers.length > 0 ? (
                             filteredUsers.map((user, idx) => (
                                 <motion.div
                                     key={user.id}
                                     layout
-                                    initial={{ opacity: 0, y: 20 }}
+                                    initial={{ opacity: 0, y: 16 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    transition={{ delay: idx * 0.05 }}
+                                    exit={{ opacity: 0, scale: 0.96 }}
+                                    transition={{ delay: idx * 0.04, duration: 0.3 }}
                                 >
                                     <UserCard user={user} />
                                 </motion.div>
@@ -121,20 +130,20 @@ export default function Explore() {
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                className="col-span-full py-24 text-center space-y-5 bg-slate-900/80 rounded-2xl border border-white/[0.06] backdrop-blur-sm"
+                                className="col-span-full py-20 text-center space-y-4 card"
                             >
-                                <div className="w-16 h-16 bg-white/[0.04] rounded-2xl flex items-center justify-center mx-auto border border-white/[0.06]">
-                                    <Users className="h-8 w-8 text-slate-600" />
+                                <div className="w-14 h-14 bg-white/[0.03] rounded-2xl flex items-center justify-center mx-auto border border-white/[0.06]">
+                                    <Users className="h-7 w-7 text-slate-600" />
                                 </div>
-                                <div className="space-y-2">
-                                    <h3 className="text-xl font-bold text-white">No match found</h3>
-                                    <p className="text-slate-500 text-sm">Try broadening your search or choosing a different category.</p>
+                                <div>
+                                    <h3 className="text-base font-bold text-white">No results found</h3>
+                                    <p className="text-slate-500 text-sm mt-1">Try a different search term or category.</p>
                                 </div>
                                 <button
                                     onClick={() => { setSearchTerm(''); setActiveCategory('All'); }}
-                                    className="text-indigo-400 font-semibold text-sm uppercase tracking-widest hover:text-indigo-300 flex items-center gap-2 mx-auto transition-colors"
+                                    className="btn-ghost text-xs mx-auto"
                                 >
-                                    Reset Filters <ArrowRight className="h-4 w-4" />
+                                    <ArrowRight className="h-3.5 w-3.5" /> Clear filters
                                 </button>
                             </motion.div>
                         )}

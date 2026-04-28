@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { skillsAPI } from '../api/endpoints';
-import { Button } from './Button';
 import { Plus, Loader2, Sparkles, BookOpen } from 'lucide-react';
 import { clsx } from 'clsx';
 import toast from 'react-hot-toast';
 
 export default function AddSkill({ onSkillAdded }) {
     const [name, setName] = useState('');
-    const [type, setType] = useState('teach'); // 'teach' or 'learn'
+    const [type, setType] = useState('teach');
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
@@ -18,10 +17,10 @@ export default function AddSkill({ onSkillAdded }) {
         try {
             await skillsAPI.add({ name, type });
             setName('');
-            toast.success('Skill added successfully!');
+            toast.success('Skill added!');
             if (onSkillAdded) onSkillAdded();
         } catch (error) {
-            console.error("Failed to add skill", error);
+            console.error('Failed to add skill', error);
             toast.error('Failed to add skill');
         } finally {
             setLoading(false);
@@ -29,70 +28,66 @@ export default function AddSkill({ onSkillAdded }) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Type Toggle */}
-            <div className="grid grid-cols-2 gap-2 p-1 bg-gray-50 rounded-xl">
+        <form onSubmit={handleSubmit} className="space-y-3">
+            {/* Toggle */}
+            <div className="grid grid-cols-2 gap-1.5 p-1 bg-black/20 rounded-xl border border-white/[0.06]">
                 <button
                     type="button"
                     onClick={() => setType('teach')}
                     className={clsx(
-                        "flex items-center justify-center py-2.5 text-sm font-medium rounded-lg transition-all duration-200",
+                        "flex items-center justify-center gap-1.5 py-2 text-[12px] font-semibold rounded-lg transition-all duration-200",
                         type === 'teach'
-                            ? "bg-white text-slate-900 shadow-sm ring-1 ring-gray-200"
-                            : "text-gray-500 hover:text-gray-900"
+                            ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/25"
+                            : "text-slate-500 hover:text-slate-300"
                     )}
                 >
-                    <Sparkles className={clsx("h-4 w-4 mr-2", type === 'teach' ? "text-green-500" : "text-gray-400")} />
+                    <Sparkles className="h-3.5 w-3.5" />
                     I Can Teach
                 </button>
                 <button
                     type="button"
                     onClick={() => setType('learn')}
                     className={clsx(
-                        "flex items-center justify-center py-2.5 text-sm font-medium rounded-lg transition-all duration-200",
+                        "flex items-center justify-center gap-1.5 py-2 text-[12px] font-semibold rounded-lg transition-all duration-200",
                         type === 'learn'
-                            ? "bg-white text-slate-900 shadow-sm ring-1 ring-gray-200"
-                            : "text-gray-500 hover:text-gray-900"
+                            ? "bg-indigo-500/15 text-indigo-300 border border-indigo-500/25"
+                            : "text-slate-500 hover:text-slate-300"
                     )}
                 >
-                    <BookOpen className={clsx("h-4 w-4 mr-2", type === 'learn' ? "text-brand" : "text-gray-400")} />
+                    <BookOpen className="h-3.5 w-3.5" />
                     I Want to Learn
                 </button>
             </div>
 
             {/* Input */}
-            <div>
-                <label htmlFor="skill-name" className="sr-only">Skill Name</label>
-                <div className="relative">
-                    <input
-                        id="skill-name"
-                        type="text"
-                        className="block w-full pl-4 pr-12 py-3 rounded-xl leading-5 glass-input placeholder-gray-400 sm:text-sm"
-                        placeholder={type === 'teach' ? "e.g. Python, Guitar, Photoshop" : "e.g. Spanish, Cooking, React"}
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                        {type === 'teach' ? (
-                            <Sparkles className="h-4 w-4 text-emerald-500" />
-                        ) : (
-                            <BookOpen className="h-4 w-4 text-brand" />
-                        )}
-                    </div>
+            <div className="relative">
+                <input
+                    id="skill-name"
+                    type="text"
+                    className="input-base pr-10 text-[13px]"
+                    placeholder={type === 'teach' ? 'e.g. Python, Guitar, Figma' : 'e.g. Spanish, React, Finance'}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                />
+                <div className="absolute inset-y-0 right-3.5 flex items-center pointer-events-none">
+                    {type === 'teach'
+                        ? <Sparkles className="h-3.5 w-3.5 text-emerald-500" />
+                        : <BookOpen className="h-3.5 w-3.5 text-indigo-400" />
+                    }
                 </div>
             </div>
 
-            <Button
+            {/* Submit */}
+            <button
                 type="submit"
-                className="w-full btn-primary h-11 flex justify-center items-center"
                 disabled={loading || !name.trim()}
+                className="w-full btn-primary py-2.5 text-[13px]"
             >
-                {loading ? <Loader2 className="animate-spin h-5 w-5" /> : (
-                    <>
-                        <Plus className="h-4 w-4 mr-2" /> Add Skill
-                    </>
-                )}
-            </Button>
+                {loading
+                    ? <Loader2 className="animate-spin h-4 w-4" />
+                    : <><Plus className="h-4 w-4" /> Add Skill</>
+                }
+            </button>
         </form>
     );
 }
