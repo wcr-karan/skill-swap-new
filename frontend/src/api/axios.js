@@ -1,8 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'https://skillswap-api-xq3t.onrender.com',
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5050',
 });
+
+console.log("Axios API BaseURL:", api.defaults.baseURL);
 
 // Add a request interceptor to include the token
 api.interceptors.request.use(
