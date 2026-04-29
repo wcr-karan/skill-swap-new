@@ -1,3 +1,9 @@
+
+
+https://github.com/user-attachments/assets/4da95074-5092-4c49-a711-fbc6cf251ac6
+
+
+
 # Skill Swap Platform
 
 A web application that enables users to connect and swap skills with each other. Users can register, list their skills, find others with complementary skills, and initiate swaps.
