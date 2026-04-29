@@ -5,7 +5,11 @@ A comprehensive peer-to-peer skill exchange application designed to facilitate k
 ## Demonstration
 
 Video demonstration of the platform:
-https://github.com/user-attachments/assets/4da95074-5092-4c49-a711-fbc6cf251ac6
+
+https://github.com/user-attachments/assets/e8c73a56-9740-4cb0-8fc2-a2020d5a6baf
+
+
+
 
 ## Project Overview
 
