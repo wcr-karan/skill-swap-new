@@ -93,8 +93,48 @@ io.on("connection", (socket) => {
   });
 });
 
+// ─────────────────────────────────────────
+// Seed demo account on startup
+// ─────────────────────────────────────────
+const bcrypt = require("bcrypt");
+
+async function seedDemoAccount() {
+  try {
+    const email = "test@example.com";
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (!existing) {
+      const hashedPassword = await bcrypt.hash("test123", 10);
+      await prisma.user.create({
+        data: {
+          name: "Demo User",
+          email,
+          password: hashedPassword,
+          bio: "This is a demo account for testing SkillSwap.",
+        },
+      });
+      console.log("✅ Demo account seeded: test@example.com / test123");
+    } else {
+      // Ensure the password is correct (in case it was changed or corrupted)
+      const isMatch = await bcrypt.compare("test123", existing.password);
+      if (!isMatch) {
+        const hashedPassword = await bcrypt.hash("test123", 10);
+        await prisma.user.update({
+          where: { email },
+          data: { password: hashedPassword },
+        });
+        console.log("🔄 Demo account password reset to: test123");
+      } else {
+        console.log("✅ Demo account already exists and password is correct.");
+      }
+    }
+  } catch (error) {
+    console.error("⚠️ Failed to seed demo account:", error.message);
+  }
+}
+
 const port = process.env.PORT || 5050;
 
-server.listen(port, "0.0.0.0", () => {
+server.listen(port, "0.0.0.0", async () => {
   console.log(`Server running on port ${port}`);
+  await seedDemoAccount();
 });
